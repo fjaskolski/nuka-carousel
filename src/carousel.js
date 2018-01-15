@@ -45,7 +45,7 @@ const Carousel = createReactClass({
     autoplay: PropTypes.bool,
     autoplayInterval: PropTypes.number,
     beforeSlide: PropTypes.func,
-    cellAlign: PropTypes.oneOf(['left', 'center', 'right']),
+    cellAlign: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     cellSpacing: PropTypes.number,
     data: PropTypes.func,
     decorators: PropTypes.arrayOf(
@@ -651,22 +651,30 @@ const Carousel = createReactClass({
   getTargetLeft(touchOffset, slide) {
     var offset;
     var target = slide || this.state.currentSlide;
-    switch (this.props.cellAlign) {
-    case 'left': {
-      offset = 0;
+    if(typeof this.props.cellAlign === 'number') {
+      offset = this.props.cellAlign;
       offset -= this.props.cellSpacing * target;
-      break;
-    }
-    case 'center': {
-      offset = (this.state.frameWidth - this.state.slideWidth) / 2;
-      offset -= this.props.cellSpacing * target;
-      break;
-    }
-    case 'right': {
-      offset = this.state.frameWidth - this.state.slideWidth;
-      offset -= this.props.cellSpacing * target;
-      break;
-    }
+    } else {
+      switch (this.props.cellAlign) {
+        case 'left':
+          {
+            offset = 0;
+            offset -= this.props.cellSpacing * target;
+            break;
+          }
+        case 'center':
+          {
+            offset = (this.state.frameWidth - this.state.slideWidth) / 2;
+            offset -= this.props.cellSpacing * target;
+            break;
+          }
+        case 'right':
+          {
+            offset = this.state.frameWidth - this.state.slideWidth;
+            offset -= this.props.cellSpacing * target;
+            break;
+          }
+      }
     }
 
     var left = this.state.slideWidth * target;
